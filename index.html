@@ -49,6 +49,7 @@
             background: linear-gradient(to right, red, orange, #eedc00, green, blue, indigo, violet);
             -webkit-background-clip: text; color: transparent;
             animation: rainbow 4s linear infinite; background-size: 400% 100%;
+            text-align: center;
         }
         @keyframes rainbow {
             0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; }
@@ -151,6 +152,22 @@
 
         /* FOOTER */
         .footer-text { text-align: center; margin-top: auto; padding-top: 20px; font-size: 13px; color: var(--text-sub); border-top: 1px solid var(--border); }
+
+        /* === ĐOẠN SỬA LỖI ĐIỆN THOẠI (RESPONSIVE) === */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .profile-card { padding: 20px 15px; min-height: auto; }
+            .top-navbar { flex-direction: column; gap: 15px; text-align: center; }
+            .header-profile-box { flex-direction: column; }
+            .right-info-box { align-items: center; width: 100%; }
+            .main-title-center { font-size: 24px; order: -1; }
+            .custom-grid-3 { grid-template-columns: 1fr; gap: 15px; }
+            .product-item-row { flex-direction: column; align-items: flex-start; gap: 12px; padding: 15px; }
+            .shopee-buy-btn { width: 100%; text-align: center; padding: 10px; }
+            .form-row { flex-direction: column; gap: 8px; }
+            .form-row textarea { height: 60px; }
+            .form-row button { padding: 10px 0; }
+        }
     </style>
 </head>
 <body>
@@ -310,11 +327,14 @@
         
         // Hỗ trợ kéo trên điện thoại
         container.ontouchstart = function(e) {
-            isDragging = true; startX = e.touches.clientX - translateX; startY = e.touches.clientY - translateY;
+            isDragging = true; 
+            startX = e.touches[0].clientX - translateX; 
+            startY = e.touches[0].clientY - translateY;
         };
         window.ontouchmove = function(e) {
             if (!isDragging) return;
-            translateX = e.touches.clientX - startX; translateY = e.touches.clientY - startY;
+            translateX = e.touches[0].clientX - startX; 
+            translateY = e.touches[0].clientY - startY;
             img.style.transform = `translate(${translateX}px, ${translateY}px)`;
         };
         window.ontouchend = function() { isDragging = false; };
