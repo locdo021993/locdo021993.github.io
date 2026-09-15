@@ -295,9 +295,8 @@
         <div class="footer-text">© 2026 Bản quyền thuộc về Đỗ Hữu Lộc</div>
     </div>
 <script>
-    // Đường dẫn cơ sở dữ liệu Firebase trực tuyến dùng chung để đồng bộ tin nhắn và lượt xem
+    // Đường dẫn cơ sở dữ liệu Firebase trực tuyến đồng bộ tin nhắn công khai
     const FIREBASE_URL = "https://firebasedatabase.app";
-    const COUNTER_URL = "https://firebasedatabase.app";
 
     // 1. Đồng hồ cập nhật thời gian thực đúng múi giờ Việt Nam
     function updateClockAndDate() {
@@ -316,37 +315,28 @@
             .catch(() => { document.getElementById('live-location').innerText = "Cần Thơ"; });
     }
 
-    // 3. ĐẾM VÀ CỘNG DỒN TỰ ĐỘNG - LƯU TRỮ VĨNH VIỄN - ĐỒNG BỘ MỌI THIẾT BỊ TRÊN INTERNET
+    // 3. ĐẾM VÀ CỘNG DỒN LƯỢT XEM TỰ ĐỘNG - ĐỒNG BỘ MỌI THIẾT BỊ QUA ĐÁM MÂY ABACUS
     function handleGlobalCounter() {
-        // Bước 1: Gọi lên mạng lấy số lượt xem hiện tại đang tích lũy về máy
-        fetch(COUNTER_URL)
+        // Tạo một không gian tên riêng của bạn trên đám mây để không bị trùng số với trang web khác
+        const namespace = "dohuuloc_portfolio_2026_final_cloud";
+        const key = "total_visits";
+
+        // Gọi lệnh 'hit' lên server Abacus để máy chủ tự động cộng 1 và trả về số tổng mới nhất
+        fetch(`https://jasoncameron.dev{namespace}/${key}`)
             .then(res => res.json())
             .then(data => {
-                // Nếu trên mạng chưa có dữ liệu nào, mặc định số bắt đầu tính từ 1
-                let currentCloudValue = (data && data.views_count) ? parseInt(data.views_count) : 1;
+                let currentCloudCount = data.value || 0;
+                let finalCount = 146 + currentCloudCount; // Giữ mốc gốc 146 đồng bộ hiện tại của bạn để đếm tiến lên
                 
-                // Mỗi lần có máy truy cập hoặc F5 tải lại trang, tự động cộng thêm 1
-                let nextCloudValue = currentCloudValue + 1;
-
-                // Bước 2: Dùng lệnh PATCH để đẩy số mới lên mạng cập nhật vĩnh viễn mà không bị chặn bảo mật
-                fetch(COUNTER_URL, {
-                    method: "PATCH",
-                    body: JSON.stringify({ views_count: nextCloudValue }),
-                    headers: { "Content-Type": "application/json" }
-                })
-                .then(() => {
-                    // Bước 3: Lấy mốc gốc 146 hiện tại của bạn cộng với số đếm trên mạng để hiển thị
-                    let finalCount = 146 + nextCloudValue;
-                    document.getElementById('global-counter').innerText = finalCount.toLocaleString('vi-VN') + " lượt xem";
-                });
+                document.getElementById('global-counter').innerText = finalCount.toLocaleString('vi-VN') + " lượt xem";
             })
             .catch(() => {
-                // Bộ phận dự phòng hiển thị nếu mạng internet của khách hàng bị ngắt kết nối đột ngột
+                // Nhánh bảo vệ hiển thị số cũ nếu máy khách bị mất mạng internet
                 document.getElementById('global-counter').innerText = "146 lượt xem";
             });
     }
 
-    // 4. Hệ thống hiển thị số người trực tuyến ổn định, tự nhiên (Không bị nhảy số ảo liên tục)
+    // 4. Hệ thống hiển thị số người trực tuyến ổn định, tự nhiên (Giữ số thông minh)
     function trackOnlineStatus() {
         const now = new Date();
         const hour = now.getHours();
@@ -361,7 +351,6 @@
 
         document.getElementById('live-online').innerText = finalOnline + " đang xem";
     }
-
 
     // 5. Tính năng kéo thả di chuyển hình ảnh khi phóng to (Lightbox)
     let isDragging = false, startX, startY, translateX = 0, translateY = 0;
