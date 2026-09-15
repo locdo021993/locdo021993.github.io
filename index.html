@@ -235,9 +235,9 @@
                 <span class="gallery-link">sở thích của tôi</span>
             </div>
         </div>
-
-        <!-- Lưới 3 video (1 MP4 cá nhân & 2 Youtube) -->
+        <!-- KHUNG PHÁT VIDEO NÂNG CẤP DẠNG LƯỚI (NẰM DƯỚI 3 TẤM HÌNH) -->
         <div class="video-grid-container">
+            <!-- Ô 1: Phát tệp tin video.mp4 lưu trong thư mục máy -->
             <div class="video-item-card">
                 <div class="video-wrapper-box">
                     <video controls preload="metadata">
@@ -248,6 +248,7 @@
                 <span class="video-caption-title">📹 Video từ máy cá nhân</span>
             </div>
             
+            <!-- Ô 2: Nhúng mã trình phát YouTube 1 -->
             <div class="video-item-card">
                 <div class="video-wrapper-box">
                     <iframe src="https://youtube.com" 
@@ -258,6 +259,7 @@
                 <span class="video-caption-title">📺 Dự án điện tử 1 (YouTube)</span>
             </div>
 
+            <!-- Ô 3: Nhúng mã trình phát YouTube 2 -->
             <div class="video-item-card">
                 <div class="video-wrapper-box">
                     <iframe src="https://youtube.com" 
@@ -316,7 +318,7 @@
             </div>
         </div>
 
-        <!-- Khung lưu bút -->
+        <!-- Khung lưu bút nhắn lời chúc -->
         <div class="guestbook-section">
             <h3>✍️ Để lại lời nhắn</h3>
             <div class="form-row">
@@ -327,7 +329,7 @@
             <div class="message-list" id="msg-container"></div>
         </div>
         
-        <!-- Cửa sổ lightbox ảnh -->
+        <!-- Cửa sổ ẩn để phóng to hình ảnh -->
         <div id="customLightbox" class="media-lightbox" onclick="closeZoom()">
             <span class="lightbox-close" onclick="closeZoom()">&times;</span>
             <div id="lightboxMediaContainer"></div>
@@ -336,6 +338,7 @@
         <!-- Chân trang -->
         <div class="footer-text">© 2026 Bản quyền thuộc về Đỗ Hữu Lộc</div>
     </div>
+
 <script>
     // Link cơ sở dữ liệu Firebase dùng chung để lưu lời nhắn công khai
     const FIREBASE_URL = "https://firebasedatabase.app";
