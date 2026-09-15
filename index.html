@@ -172,6 +172,7 @@
 </head>
 <body>
     <div class="profile-card">
+        <!-- Thanh điều hướng và thông tin đầu trang -->
         <div class="top-navbar">
             <div class="header-profile-box">
                 <div class="avatar-container"><img src="avatar.jpeg" class="avatar-img" alt="Avatar"></div>
@@ -183,17 +184,19 @@
             <div class="main-title-center">Trang Web Cá Nhân</div>
             <div class="right-info-box">
                 <div>⏰ Giờ: <span id="live-clock" class="info-value-mini">00:00:00</span></div>
-                <div>📅 Ngày: <span id="live-date" class="info-value-mini">14/09/2026</span></div>
+                <div>📅 Ngày: <span id="live-date" class="info-value-mini">--/--/----</span></div>
                 <div>📍 Vị trí: <span id="live-location" class="info-value-mini">Đang xác định...</span></div>
                 <div>📊 Lượt xem: <span id="global-counter" class="info-value-mini">0</span></div>
                 <button class="theme-toggle-btn" onclick="toggleTheme()">🌙 Chế độ tối</button>
             </div>
         </div>
         
+        <!-- Chữ chạy giới thiệu -->
         <div class="bio-container">
             <p class="bio-marquee">Xin chào! Tôi là Đỗ Hữu Lộc. Chào mừng bạn đã ghé thăm trang web cá nhân chính thức của tôi!</p>
         </div>
 
+        <!-- Tâm trạng -->
         <div class="status-container">
             <div class="status-title">💭 Tâm trạng hôm nay</div>
             <div class="status-box-round">
@@ -201,6 +204,7 @@
             </div>
         </div>
         
+        <!-- Lưới hình ảnh -->
         <div class="custom-grid-3">
             <div class="grid-item-box" style="cursor: pointer;" onclick="zoomImage(this)">
                 <div class="media-wrapper"><img src="anh1.jpg" alt="Ảnh 1"></div>
@@ -216,6 +220,7 @@
             </div>
         </div>
 
+        <!-- Tiếp thị liên kết Shopee -->
         <div class="shopee-section">
             <h3>🛍️ Gợi ý sản phẩm yêu thích (Shopee)</h3>
             <div class="product-list-vertical">
@@ -262,6 +267,7 @@
             </div>
         </div>
 
+        <!-- Phần Lưu bút nhắn tin -->
         <div class="guestbook-section">
             <h3>✍️ Để lại lời nhắn</h3>
             <div class="form-row">
@@ -272,32 +278,34 @@
             <div class="message-list" id="msg-container"></div>
         </div>
         
+        <!-- Khung Lightbox Phóng to ảnh -->
         <div id="customLightbox" class="media-lightbox" onclick="closeZoom()">
             <span class="lightbox-close" onclick="closeZoom()">&times;</span>
             <div id="lightboxMediaContainer"></div>
         </div>
         
+        <!-- Bản quyền chân trang -->
         <div class="footer-text">© 2026 Bản quyền thuộc về Đỗ Hữu Lộc</div>
     </div>
 <script>
+    // 1. Đồng hồ cập nhật thời gian thực
     function updateClockAndDate() {
         const now = new Date();
         document.getElementById('live-clock').innerText = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
         document.getElementById('live-date').innerText = `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()}`;
     }
+
+    // 2. Xác định tỉnh thành Việt Nam qua IP tiếng Việt miễn phí
     function updateLocation() {
-        fetch('https://ipapi.co')
+        fetch('https://ip-api.com')
             .then(res => res.json())
             .then(data => {
-                let city = data.city || "Cần Thơ"; let lowCity = city.toLowerCase();
-                if (lowCity.includes("ho chi minh") || lowCity.includes("saigon")) city = "TP. Hồ Chí Minh";
-                else if (lowCity.includes("hanoi")) city = "Hà Nội";
-                else if (lowCity.includes("da nang")) city = "Đà Nẵng";
-                else if (lowCity.includes("can tho")) city = "Cần Thơ";
-                document.getElementById('live-location').innerText = city;
+                document.getElementById('live-location').innerText = data.city || "Cần Thơ";
             })
             .catch(() => { document.getElementById('live-location').innerText = "Cần Thơ"; });
     }
+
+    // 3. Đếm lượt xem qua LocalStorage cá nhân
     function handleGlobalCounter() {
         try {
             let count = parseInt(localStorage.getItem('dohuuloc_counter')) || 164;
@@ -306,6 +314,7 @@
         } catch (e) { document.getElementById('global-counter').innerText = "164 lượt xem"; }
     }
 
+    // 4. Biến điều khiển tính năng kéo thả phóng đại ảnh
     let isDragging = false, startX, startY, translateX = 0, translateY = 0;
     
     function zoomImage(el) {
@@ -315,6 +324,7 @@
         container.innerHTML = `<img src="${el.querySelector('img').src}" class="lightbox-content" style="transform: translate(0px, 0px);">`;
         lightbox.style.display = "flex";
         const img = container.querySelector('.lightbox-content');
+        
         container.onmousedown = function(e) {
             isDragging = true; startX = e.clientX - translateX; startY = e.clientY - translateY; return false;
         };
@@ -325,7 +335,7 @@
         };
         window.onmouseup = function() { isDragging = false; };
         
-        // Hỗ trợ kéo trên điện thoại
+        // Hỗ trợ kéo di chuyển ảnh mượt mà trên màn hình điện thoại
         container.ontouchstart = function(e) {
             isDragging = true; 
             startX = e.touches[0].clientX - translateX; 
@@ -340,18 +350,33 @@
         window.ontouchend = function() { isDragging = false; };
     }
     
+    // Đóng chế độ xem ảnh lớn và tắt các hàm ngầm để điện thoại cuộn bình thường
     function closeZoom() {
-        isDragging = false; window.onmousemove = null; window.onmouseup = null;
+        isDragging = false; 
+        window.onmousemove = null; window.onmouseup = null;
+        window.ontouchmove = null; window.ontouchend = null;
         document.getElementById('customLightbox').style.display = "none";
     }
 
+    // 5. Chuyển đổi giao diện Sáng / Tối (Dark mode)
     function toggleTheme() {
         const dark = document.documentElement.getAttribute('data-theme') === 'dark';
-        if (dark) { document.documentElement.removeAttribute('data-theme'); document.querySelector('.theme-toggle-btn').innerText = "🌙 Chế độ tối"; localStorage.setItem('theme', 'light'); }
-        else { document.documentElement.setAttribute('data-theme', 'dark'); document.querySelector('.theme-toggle-btn').innerText = "☀️ Chế độ sáng"; localStorage.setItem('theme', 'dark'); }
+        if (dark) { 
+            document.documentElement.removeAttribute('data-theme'); 
+            document.querySelector('.theme-toggle-btn').innerText = "🌙 Chế độ tối"; 
+            localStorage.setItem('theme', 'light'); 
+        } else { 
+            document.documentElement.setAttribute('data-theme', 'dark'); 
+            document.querySelector('.theme-toggle-btn').innerText = "☀️ Chế độ sáng"; 
+            localStorage.setItem('theme', 'dark'); 
+        }
     }
-    if (localStorage.getItem('theme') === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); setTimeout(() => { document.querySelector('.theme-toggle-btn').innerText = "☀️ Chế độ sáng"; }, 100); }
+    if (localStorage.getItem('theme') === 'dark') { 
+        document.documentElement.setAttribute('data-theme', 'dark'); 
+        setTimeout(() => { document.querySelector('.theme-toggle-btn').innerText = "☀️ Chế độ sáng"; }, 100); 
+    }
     
+    // 6. Hiển thị lời nhắn Lưu bút
     function loadMessages() {
         const container = document.getElementById('msg-container'); if(!container) return; container.innerHTML = "";
         let msgs = JSON.parse(localStorage.getItem('dohuuloc_msgs')) || [];
@@ -362,6 +387,8 @@
             container.appendChild(div);
         });
     }
+
+    // Thêm tin nhắn lời chúc mới
     function addMessage() {
         const nameIn = document.getElementById('visitor-name'), msgIn = document.getElementById('visitor-msg');
         const name = nameIn.value.trim(), text = msgIn.value.trim();
@@ -372,7 +399,12 @@
         nameIn.value = ""; msgIn.value = ""; loadMessages();
     }
     
-    updateClockAndDate(); setInterval(updateClockAndDate, 1000); handleGlobalCounter(); loadMessages(); updateLocation();
+    // 7. Kích hoạt toàn bộ hệ thống khi tải trang xong
+    updateClockAndDate(); 
+    setInterval(updateClockAndDate, 1000); 
+    handleGlobalCounter(); 
+    loadMessages(); 
+    updateLocation();
 </script>
 </body>
 </html>
