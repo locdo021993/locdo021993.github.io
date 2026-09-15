@@ -76,7 +76,6 @@
         }
         .bio-marquee { display: inline-block; font-size: 16px; padding-left: 100%; animation: marquee 15s linear infinite; }
         @keyframes marquee { 0% { transform: translate3d(0,0,0); } 100% { transform: translate3d(-100%,0,0); } }
-
         /* KHUNG TÂM TRẠNG */
         .status-container {
             background: var(--bg-card); border: 1px solid var(--border);
@@ -94,7 +93,7 @@
         }
         
         /* LƯỚI ẢNH */
-        .custom-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 35px; }
+        .custom-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; }
         .grid-item-box {
             background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
             padding: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); display: flex;
@@ -105,6 +104,16 @@
         .media-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
         .grid-item-box:hover .media-wrapper img { transform: scale(1.08); }
         .gallery-link { color: var(--text-main); font-size: 14px; font-weight: 500; text-align: center; width: 100%; }
+
+        /* KHUNG LƯỚI VIDEO MỚI */
+        .video-grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 35px; width: 100%; }
+        .video-item-card {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+            padding: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); display: flex; flex-direction: column;
+        }
+        .video-wrapper-box { width: 100%; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; background: #000; margin-bottom: 10px; }
+        .video-wrapper-box video, .video-wrapper-box iframe { width: 100%; height: 100%; border: none; object-fit: cover; }
+        .video-caption-title { color: var(--text-main); font-size: 14px; font-weight: 600; text-align: center; margin-top: 2px; }
 
         /* SHOPEE */
         .shopee-section {
@@ -167,7 +176,7 @@
             .header-profile-box { flex-direction: column; }
             .right-info-box { align-items: center; width: 100%; }
             .main-title-center { font-size: 24px; order: -1; }
-            .custom-grid-3 { grid-template-columns: 1fr; gap: 15px; }
+            .custom-grid-3, .video-grid-container { grid-template-columns: 1fr; gap: 15px; }
             .product-item-row { flex-direction: column; align-items: flex-start; gap: 12px; padding: 15px; }
             .shopee-buy-btn { width: 100%; text-align: center; padding: 10px; }
             .form-row { flex-direction: column; gap: 8px; }
@@ -178,6 +187,7 @@
 </head>
 <body>
     <div class="profile-card">
+        <!-- Thanh điều hướng và thông tin đầu trang -->
         <div class="top-navbar">
             <div class="header-profile-box">
                 <div class="avatar-container"><img src="avatar.jpeg" class="avatar-img" alt="Avatar"></div>
@@ -197,10 +207,12 @@
             </div>
         </div>
         
+        <!-- Chữ chạy giới thiệu -->
         <div class="bio-container">
             <p class="bio-marquee">Xin chào! Tôi là Đỗ Hữu Lộc. Chào mừng bạn đã ghé thăm trang web cá nhân chính thức của tôi!</p>
         </div>
 
+        <!-- Khung tâm trạng -->
         <div class="status-container">
             <div class="status-title">💭 Tâm trạng hôm nay</div>
             <div class="status-box-round">
@@ -208,6 +220,7 @@
             </div>
         </div>
         
+        <!-- Lưới 3 tấm hình -->
         <div class="custom-grid-3">
             <div class="grid-item-box" style="cursor: pointer;" onclick="zoomImage(this)">
                 <div class="media-wrapper"><img src="anh1.jpg" alt="Ảnh 1"></div>
@@ -223,6 +236,40 @@
             </div>
         </div>
 
+        <!-- Lưới 3 video (1 MP4 cá nhân & 2 Youtube) -->
+        <div class="video-grid-container">
+            <div class="video-item-card">
+                <div class="video-wrapper-box">
+                    <video controls preload="metadata">
+                        <source src="video.mp4" type="video/mp4">
+                        Trình duyệt không hỗ trợ xem video.
+                    </video>
+                </div>
+                <span class="video-caption-title">📹 Video từ máy cá nhân</span>
+            </div>
+            
+            <div class="video-item-card">
+                <div class="video-wrapper-box">
+                    <iframe src="https://youtube.com" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+                <span class="video-caption-title">📺 Dự án điện tử 1 (YouTube)</span>
+            </div>
+
+            <div class="video-item-card">
+                <div class="video-wrapper-box">
+                    <iframe src="https://youtube.com" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+                <span class="video-caption-title">📺 Hướng dẫn lập trình (YouTube)</span>
+            </div>
+        </div>
+
+        <!-- Danh sách Shopee -->
         <div class="shopee-section">
             <h3>🛍️ Gợi ý sản phẩm yêu thích (Shopee)</h3>
             <div class="product-list-vertical">
@@ -269,6 +316,7 @@
             </div>
         </div>
 
+        <!-- Khung lưu bút -->
         <div class="guestbook-section">
             <h3>✍️ Để lại lời nhắn</h3>
             <div class="form-row">
@@ -279,25 +327,27 @@
             <div class="message-list" id="msg-container"></div>
         </div>
         
+        <!-- Cửa sổ lightbox ảnh -->
         <div id="customLightbox" class="media-lightbox" onclick="closeZoom()">
             <span class="lightbox-close" onclick="closeZoom()">&times;</span>
             <div id="lightboxMediaContainer"></div>
         </div>
         
+        <!-- Chân trang -->
         <div class="footer-text">© 2026 Bản quyền thuộc về Đỗ Hữu Lộc</div>
     </div>
 <script>
-    // Đường dẫn Firebase trực tuyến lưu trữ tin nhắn công khai dùng chung
+    // Link cơ sở dữ liệu Firebase dùng chung để lưu lời nhắn công khai
     const FIREBASE_URL = "https://firebasedatabase.app";
 
-    // 1. Đồng hồ cập nhật thời gian thực đúng múi giờ Việt Nam
+    // 1. Đồng hồ cập nhật thời gian thực
     function updateClockAndDate() {
         const now = new Date();
         document.getElementById('live-clock').innerText = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
         document.getElementById('live-date').innerText = `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()}`;
     }
 
-    // 2. Định vị tỉnh thành Việt Nam qua IP tiếng Việt chính xác
+    // 2. Định vị tỉnh thành Việt Nam qua IP
     function updateLocation() {
         fetch('https://ip-api.com')
             .then(res => res.json())
@@ -309,16 +359,15 @@
 
     // 3. ĐẾM VÀ CỘNG DỒN ĐỒNG BỘ 100% TRÊN MỌI MÁY QUA ĐÁM MÂY ABACUS
     function handleGlobalCounter() {
-        // Tạo không gian đếm tên riêng cho Đỗ Hữu Lộc trên hệ thống đám mây toàn cầu
         const namespace = "dohuuloc_portfolio_2026_abacus_system";
         const key = "total_visits";
 
-        // Sử dụng cổng mạng Abacus để tự động tăng số và lấy dữ liệu cộng dồn về máy
+        // Server Abacus sẽ tự lấy số cũ ra tăng lên 1 và trả về số tổng mới nhất vĩnh viễn
         fetch(`https://jasoncameron.dev{namespace}/${key}`)
             .then(res => res.json())
             .then(data => {
                 let cloudCount = data.value || 0;
-                let finalCount = 146 + cloudCount; // Giữ mốc gốc 146 hiện tại của bạn để đếm tiến lên
+                let finalCount = 146 + cloudCount; // Giữ mốc gốc 146 làm điểm xuất phát cộng dồn tiến lên
                 document.getElementById('global-counter').innerText = finalCount.toLocaleString('vi-VN') + " lượt xem";
             })
             .catch(() => {
@@ -327,7 +376,7 @@
             });
     }
 
-    // 4. Thuật toán hiển thị số người trực tuyến thông minh (Giao diện tự nhiên và uy tín)
+    // 4. Hệ thống số người trực tuyến mô phỏng tự nhiên theo thời gian
     function trackOnlineStatus() {
         const now = new Date();
         const hour = now.getHours();
@@ -430,7 +479,7 @@
             });
     }
 
-    // 8. Đẩy tin nhắn mới gửi lên hệ thống máy chủ mạng dùng chung Firebase
+    // 8. Đẩy tin nhắn mới gửi lên hệ thống máy chủ mạng Firebase công cộng
     function addMessage() {
         const nameIn = document.getElementById('visitor-name'), msgIn = document.getElementById('visitor-msg');
         const name = nameIn.value.trim(), text = msgIn.value.trim();
