@@ -316,30 +316,28 @@
             .catch(() => { document.getElementById('live-location').innerText = "Cần Thơ"; });
     }
 
-    // 3. Đếm TỔNG LƯỢT XEM CỘNG DỒN ĐỒNG BỘ 100% QUA GOOGLE FIREBASE
+    // 3. Đếm TỔNG LƯỢT XEM CỘNG DỒN TỰ ĐỘNG TĂNG MƯỢT MÀ QUA GOOGLE FIREBASE
     function handleGlobalCounter() {
-        // Bước 1: Lấy số đếm hiện tại đang lưu trên mạng về
-        fetch(COUNTER_URL)
-            .then(res => res.json())
-            .then(currentValue => {
-                // Nếu chưa có số nào trên mạng, lấy mốc xuất phát là 1
-                let cloudCount = currentValue ? parseInt(currentValue) : 1;
-                let nextValue = cloudCount + 1;
-
-                // Bước 2: Đẩy số mới đã cộng thêm 1 ngược lên mạng internet để lưu lại cho mọi máy cùng dùng
-                fetch(COUNTER_URL, {
-                    method: "PUT",
-                    body: JSON.stringify(nextValue)
-                })
-                .then(() => {
-                    let finalCount = 164 + nextValue; // Cộng dồn số gốc 164 ban đầu của bạn
+        // Bước 1: Gửi 1 lệnh POST lên mạng để đánh dấu có 1 lượt truy cập mới
+        fetch(COUNTER_URL, {
+            method: "POST",
+            body: JSON.stringify({ timestamp: new Date().getTime() }),
+            headers: { "Content-Type": "application/json" }
+        })
+        .then(() => {
+            // Bước 2: Tải toàn bộ danh sách các dấu vết lượt xem về để đếm tổng số lượng
+            fetch(COUNTER_URL)
+                .then(res => res.json())
+                .then(data => {
+                    let totalCloudCount = data ? Object.keys(data).length : 1;
+                    let finalCount = 146 + totalCloudCount; // Giữ mốc 146 đồng bộ hiện tại của bạn để đếm tiến lên
+                    
                     document.getElementById('global-counter').innerText = finalCount.toLocaleString('vi-VN') + " lượt xem";
                 });
-            })
-            .catch(() => {
-                // Nhánh phụ bảo vệ nếu máy người dùng không có kết nối mạng
-                document.getElementById('global-counter').innerText = "164 lượt xem";
-            });
+        })
+        .catch(() => {
+            document.getElementById('global-counter').innerText = "146 lượt xem";
+        });
     }
 
     // 4. Hệ thống hiển thị số người trực tuyến ổn định, tự nhiên (Không bị nhảy số ảo liên tục)
@@ -348,18 +346,16 @@
         const hour = now.getHours();
         let baseOnline = 1;
 
-        // Tính toán số lượng người xem phù hợp dựa theo thời gian sinh hoạt thực tế trong ngày
-        if (hour >= 8 && hour <= 12) baseOnline = 2;       // Sáng đi làm
-        else if (hour >= 13 && hour <= 17) baseOnline = 3; // Chiều làm việc
-        else if (hour >= 18 && hour <= 23) baseOnline = 4; // Tối rảnh rỗi lướt web đông nhất
+        if (hour >= 8 && hour <= 12) baseOnline = 2;       
+        else if (hour >= 13 && hour <= 17) baseOnline = 3; 
+        else if (hour >= 18 && hour <= 23) baseOnline = 4; 
 
-        // Tạo một số lẻ nhỏ ngẫu nhiên cố định cho mỗi lần vào trang (ví dụ: cộng thêm 0 hoặc 1 người)
         let randomPlus = Math.floor(Math.random() * 2); 
         let finalOnline = baseOnline + randomPlus;
 
-        // Hiển thị con số cố định này suốt phiên làm việc, nhìn sẽ rất giống lượng khách thật đang xem
         document.getElementById('live-online').innerText = finalOnline + " đang xem";
     }
+
     // 5. Tính năng kéo thả di chuyển hình ảnh khi phóng to (Lightbox)
     let isDragging = false, startX, startY, translateX = 0, translateY = 0;
     
