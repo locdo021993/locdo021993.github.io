@@ -72,11 +72,16 @@
         }
         .bio-container {
             background: var(--bg-box); padding: 15px 20px; border-radius: 8px;
-            border-left: 5px solid #007bff; margin-bottom: 25px; overflow: hidden; white-space: nowrap;
+            border-left: 5px solid #007bff; margin-bottom: 25px; overflow: hidden;
         }
-        .bio-marquee { display: inline-block; font-size: 16px; padding-left: 100%; animation: marquee 15s linear infinite; }
-        @keyframes marquee { 0% { transform: translate3d(0,0,0); } 100% { transform: translate3d(-100%,0,0); } }
-        /* KHUNG TÂM TRẠNG */
+        .bio-marquee { 
+            display: block; font-size: 16px; white-space: nowrap; 
+            animation: marquee 20s linear infinite; 
+        }
+        @keyframes marquee { 
+            0% { transform: translateX(100%); } 
+            100% { transform: translateX(-100%); } 
+        }
         .status-container {
             background: var(--bg-card); border: 1px solid var(--border);
             border-radius: 12px; padding: 18px 25px; margin-bottom: 30px; width: 100%;
@@ -91,8 +96,6 @@
             border-radius: 10px; padding: 12px 18px; font-size: 15px;
             line-height: 1.5; color: var(--text-main);
         }
-        
-        /* LƯỚI ẢNH */
         .custom-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; }
         .grid-item-box {
             background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
@@ -104,8 +107,6 @@
         .media-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
         .grid-item-box:hover .media-wrapper img { transform: scale(1.08); }
         .gallery-link { color: var(--text-main); font-size: 14px; font-weight: 500; text-align: center; width: 100%; }
-
-        /* KHUNG LƯỚI VIDEO MỚI */
         .video-grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 35px; width: 100%; }
         .video-item-card {
             background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
@@ -114,8 +115,6 @@
         .video-wrapper-box { width: 100%; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; background: #000; margin-bottom: 10px; }
         .video-wrapper-box video, .video-wrapper-box iframe { width: 100%; height: 100%; border: none; object-fit: cover; }
         .video-caption-title { color: var(--text-main); font-size: 14px; font-weight: 600; text-align: center; margin-top: 2px; }
-
-        /* SHOPEE */
         .shopee-section {
             background: var(--bg-box); border: 1px solid var(--border);
             border-radius: 12px; padding: 25px; margin-bottom: 35px; width: 100%;
@@ -128,22 +127,12 @@
             align-items: center; justify-content: space-between; gap: 15px;
         }
         .product-left-block { display: flex; align-items: center; gap: 15px; }
-        .product-img-mini {
-            width: 60px; height: 60px; border-radius: 6px;
-            object-fit: cover; background: var(--border); border: 1px solid var(--border);
-        }
+        .product-img-mini { width: 60px; height: 60px; border-radius: 6px; object-fit: cover; background: var(--border); border: 1px solid var(--border); }
         .product-info-text { display: flex; flex-direction: column; gap: 4px; }
         .product-title { font-weight: 600; font-size: 15px; color: var(--text-main); }
         .product-desc { font-size: 13px; color: var(--text-sub); }
-        .shopee-buy-btn {
-            background: #ee4d2d; color: #ffffff; border: none;
-            padding: 8px 18px; border-radius: 4px; font-weight: bold;
-            font-size: 13px; text-decoration: none; cursor: pointer;
-            transition: background 0.2s; white-space: nowrap;
-        }
+        .shopee-buy-btn { background: #ee4d2d; color: #ffffff; border: none; padding: 8px 18px; border-radius: 4px; font-weight: bold; font-size: 13px; text-decoration: none; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
         .shopee-buy-btn:hover { background: #d33b1c; }
-
-        /* LƯU BÚT */
         .guestbook-section { background: var(--bg-box); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 35px; }
         .guestbook-section h3 { margin-bottom: 15px; font-size: 18px; }
         .form-row { display: flex; gap: 10px; margin-bottom: 15px; }
@@ -154,21 +143,12 @@
         .msg-item { background: var(--bg-card); border: 1px solid var(--border); padding: 10px; border-radius: 6px; margin-bottom: 8px; font-size: 14px; }
         .msg-author { font-weight: bold; color: #007bff; margin-right: 5px; }
         .msg-time { font-size: 11px; color: var(--text-sub); float: right; }
-        
-        /* LIGHTBOX PHÓNG TO ẢNH */
-        .media-lightbox { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.9); display: none; justify-content: center; 
-            align-items: center; z-index: 99999; overflow: hidden; 
-        }
+        .media-lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 99999; overflow: hidden; }
         #lightboxMediaContainer { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
         #lightboxMediaContainer img { max-width: 90%; max-height: 90%; object-fit: contain; cursor: move; }
         .lightbox-close { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 40px; font-weight: bold; cursor: pointer; z-index: 100000; }
-
-        /* FOOTER */
         .footer-text { text-align: center; margin-top: auto; padding-top: 20px; font-size: 13px; color: var(--text-sub); border-top: 1px solid var(--border); }
 
-        /* === RESPONSIVE ĐIỆN THOẠI === */
         @media (max-width: 768px) {
             body { padding: 10px; }
             .profile-card { padding: 20px 15px; min-height: auto; }
@@ -235,42 +215,31 @@
                 <span class="gallery-link">sở thích của tôi</span>
             </div>
         </div>
-        <!-- KHUNG PHÁT VIDEO NÂNG CẤP DẠNG LƯỚI (NẰM DƯỚI 3 TẤM HÌNH) -->
+
+        <!-- KHUNG PHÁT VIDEO SỬA LỖI ĐỊNH DẠNG -->
         <div class="video-grid-container">
-            <!-- Ô 1: Phát tệp tin video.mp4 lưu trong thư mục máy -->
             <div class="video-item-card">
                 <div class="video-wrapper-box">
-                    <video controls preload="metadata">
+                    <video controls preload="metadata" style="width: 100%; height: 100%; object-fit: cover;">
                         <source src="video.mp4" type="video/mp4">
                         Trình duyệt không hỗ trợ xem video.
                     </video>
                 </div>
                 <span class="video-caption-title">📹 Video từ máy cá nhân</span>
             </div>
-            
-            <!-- Ô 2: Nhúng mã trình phát YouTube 1 -->
             <div class="video-item-card">
                 <div class="video-wrapper-box">
-                    <iframe src="https://youtube.com" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                    </iframe>
+                    <iframe src="https://youtube.com" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
                 <span class="video-caption-title">📺 Dự án điện tử 1 (YouTube)</span>
             </div>
-
-            <!-- Ô 3: Nhúng mã trình phát YouTube 2 -->
             <div class="video-item-card">
                 <div class="video-wrapper-box">
-                    <iframe src="https://youtube.com" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                    </iframe>
+                    <iframe src="https://youtube.com" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
                 <span class="video-caption-title">📺 Hướng dẫn lập trình (YouTube)</span>
             </div>
         </div>
-
         <!-- Danh sách Shopee -->
         <div class="shopee-section">
             <h3>🛍️ Gợi ý sản phẩm yêu thích (Shopee)</h3>
@@ -283,7 +252,7 @@
                             <span class="product-desc">mạch phát triển code làm chát box v.v.</span>
                         </div>
                     </div>
-                    <a href="LINK_SHOPEE_CHỜ_SỐ_1" target="_blank" class="shopee-buy-btn">Mua ngay</a>
+                    <a href="#" target="_blank" class="shopee-buy-btn">Mua ngay</a>
                 </div>
                 <div class="product-item-row">
                     <div class="product-left-block">
@@ -293,7 +262,7 @@
                             <span class="product-desc">mạch phù hợp làm điều khiển ,cần không gian nhỏ</span>
                         </div>
                     </div>
-                    <a href="LINK_SHOPEE_CHỜ_SỐ_2" target="_blank" class="shopee-buy-btn">Mua ngay</a>
+                    <a href="#" target="_blank" class="shopee-buy-btn">Mua ngay</a>
                 </div>
                 <div class="product-item-row">
                     <div class="product-left-block">
@@ -303,7 +272,7 @@
                             <span class="product-desc">rơle dc 5v,12v tương thích điều khiển cho mạch esp32...</span>
                         </div>
                     </div>
-                    <a href="LINK_SHOPEE_CHỜ_SỐ_3" target="_blank" class="shopee-buy-btn">Mua ngay</a>
+                    <a href="#" target="_blank" class="shopee-buy-btn">Mua ngay</a>
                 </div>
                 <div class="product-item-row">
                     <div class="product-left-block">
@@ -313,7 +282,7 @@
                             <span class="product-desc">bơm chìm tưới cây công suất 160w/350w dc 12v/24v</span>
                         </div>
                     </div>
-                    <a href="LINK_SHOPEE_CHỜ_SỐ_4" target="_blank" class="shopee-buy-btn">Mua ngay</a>
+                    <a href="#" target="_blank" class="shopee-buy-btn">Mua ngay</a>
                 </div>
             </div>
         </div>
@@ -338,181 +307,76 @@
         <!-- Chân trang -->
         <div class="footer-text">© 2026 Bản quyền thuộc về Đỗ Hữu Lộc</div>
     </div>
-
 <script>
-    // Link cơ sở dữ liệu Firebase dùng chung để lưu lời nhắn công khai
-    const FIREBASE_URL = "https://firebasedatabase.app";
+    const FIREBASE_URL = "https://firebaseio.com";
 
-    // 1. Đồng hồ cập nhật thời gian thực
     function updateClockAndDate() {
         const now = new Date();
-        document.getElementById('live-clock').innerText = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
-        document.getElementById('live-date').innerText = `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()}`;
+        const clockEl = document.getElementById('live-clock'), dateEl = document.getElementById('live-date');
+        if (clockEl) clockEl.innerText = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+        if (dateEl) dateEl.innerText = `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()}`;
     }
 
-    // 2. Định vị tỉnh thành Việt Nam qua IP
     function updateLocation() {
-        fetch('https://ip-api.com')
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('live-location').innerText = data.city || "Cần Thơ";
-            })
-            .catch(() => { document.getElementById('live-location').innerText = "Cần Thơ"; });
+        const locEl = document.getElementById('live-location'); if (!locEl) return;
+        fetch('https://ipapi.co').then(res => res.json()).then(data => { locEl.innerText = data.city || "Cần Thơ"; }).catch(() => { locEl.innerText = "Cần Thơ"; });
     }
 
-    // 3. ĐẾM VÀ CỘNG DỒN ĐỒNG BỘ 100% TRÊN MỌI MÁY QUA ĐÁM MÂY ABACUS
     function handleGlobalCounter() {
-        const namespace = "dohuuloc_portfolio_2026_abacus_system";
-        const key = "total_visits";
-
-        // Server Abacus sẽ tự lấy số cũ ra tăng lên 1 và trả về số tổng mới nhất vĩnh viễn
-        fetch(`https://jasoncameron.dev{namespace}/${key}`)
-            .then(res => res.json())
-            .then(data => {
-                let cloudCount = data.value || 0;
-                let finalCount = 146 + cloudCount; // Giữ mốc gốc 146 làm điểm xuất phát cộng dồn tiến lên
-                document.getElementById('global-counter').innerText = finalCount.toLocaleString('vi-VN') + " lượt xem";
-            })
-            .catch(() => {
-                let count = parseInt(localStorage.getItem('dohuuloc_counter')) || 146;
-                document.getElementById('global-counter').innerText = count.toLocaleString('vi-VN') + " lượt xem";
-            });
+        const counterEl = document.getElementById('global-counter'); if (!counterEl) return;
+        let count = parseInt(localStorage.getItem('dohuuloc_counter')) || 146; count++;
+        localStorage.setItem('dohuuloc_counter', count); counterEl.innerText = count.toLocaleString('vi-VN') + " lượt xem";
     }
 
-    // 4. Hệ thống số người trực tuyến mô phỏng tự nhiên theo thời gian
     function trackOnlineStatus() {
-        const now = new Date();
-        const hour = now.getHours();
-        let baseOnline = 1;
-
-        if (hour >= 8 && hour <= 12) baseOnline = 2;       
-        else if (hour >= 13 && hour <= 17) baseOnline = 3; 
-        else if (hour >= 18 && hour <= 23) baseOnline = 4; 
-
-        let randomPlus = Math.floor(Math.random() * 2); 
-        let finalOnline = baseOnline + randomPlus;
-
-        document.getElementById('live-online').innerText = finalOnline + " đang xem";
+        const onlineEl = document.getElementById('live-online'); if (!onlineEl) return;
+        const now = new Date(), hour = now.getHours(); let baseOnline = 1;
+        if (hour >= 8 && hour <= 12) baseOnline = 2; else if (hour >= 13 && hour <= 17) baseOnline = 3; else if (hour >= 18 && hour <= 23) baseOnline = 4;
+        let randomPlus = Math.floor(Math.random() * 2); onlineEl.innerText = (baseOnline + randomPlus) + " đang xem";
     }
-    // 5. Tính năng kéo thả di chuyển hình ảnh khi phóng to (Lightbox)
+
     let isDragging = false, startX, startY, translateX = 0, translateY = 0;
-    
     function zoomImage(el) {
-        const lightbox = document.getElementById('customLightbox');
-        const container = document.getElementById('lightboxMediaContainer');
-        translateX = 0; translateY = 0;
-        container.innerHTML = `<img src="${el.querySelector('img').src}" class="lightbox-content" style="transform: translate(0px, 0px);">`;
-        lightbox.style.display = "flex";
-        const img = container.querySelector('.lightbox-content');
-        
-        container.onmousedown = function(e) {
-            isDragging = true; startX = e.clientX - translateX; startY = e.clientY - translateY; return false;
-        };
-        window.onmousemove = function(e) {
-            if (!isDragging) return;
-            translateX = e.clientX - startX; translateY = e.clientY - startY;
-            img.style.transform = `translate(${translateX}px, ${translateY}px)`;
-        };
+        const lightbox = document.getElementById('customLightbox'), container = document.getElementById('lightboxMediaContainer');
+        if (!lightbox || !container) return; translateX = 0; translateY = 0;
+        container.innerHTML = `<img src="${el.querySelector('img').src}" class="lightbox-content" style="transform: translate(0px, 0px); user-select:none;">`;
+        lightbox.style.display = "flex"; const img = container.querySelector('.lightbox-content');
+        container.onmousedown = function(e) { isDragging = true; startX = e.clientX - translateX; startY = e.clientY - translateY; return false; };
+        window.onmousemove = function(e) { if (!isDragging) return; translateX = e.clientX - startX; translateY = e.clientY - startY; img.style.transform = `translate(${translateX}px, ${translateY}px)`; };
         window.onmouseup = function() { isDragging = false; };
-        
-        container.ontouchstart = function(e) {
-            isDragging = true; 
-            startX = e.touches.clientX - translateX; 
-            startY = e.touches.clientY - translateY;
-        };
-        window.ontouchmove = function(e) {
-            if (!isDragging) return;
-            translateX = e.touches.clientX - startX; 
-            translateY = e.touches.clientY - startY;
-            img.style.transform = `translate(${translateX}px, ${translateY}px)`;
-        };
+        container.ontouchstart = function(e) { isDragging = true; startX = e.touches[0].clientX - translateX; startY = e.touches[0].clientY - translateY; };
+        window.ontouchmove = function(e) { if (!isDragging) return; translateX = e.touches[0].clientX - startX; translateY = e.touches[0].clientY - startY; img.style.transform = `translate(${translateX}px, ${translateY}px)`; };
         window.ontouchend = function() { isDragging = false; };
     }
     
-    function closeZoom() {
-        isDragging = false; 
-        window.onmousemove = null; window.onmouseup = null;
-        window.ontouchmove = null; window.ontouchend = null;
-        document.getElementById('customLightbox').style.display = "none";
-    }
+    function closeZoom() { isDragging = false; window.onmousemove = null; window.onmouseup = null; window.ontouchmove = null; window.ontouchend = null; document.getElementById('customLightbox').style.display = "none"; }
 
-    // 6. Chuyển đổi giao diện Sáng / Tối (Dark mode)
     function toggleTheme() {
-        const dark = document.documentElement.getAttribute('data-theme') === 'dark';
-        if (dark) { 
-            document.documentElement.removeAttribute('data-theme'); 
-            document.querySelector('.theme-toggle-btn').innerText = "🌙 Chế độ tối"; 
-            localStorage.setItem('theme', 'light'); 
-        } else { 
-            document.documentElement.setAttribute('data-theme', 'dark'); 
-            document.querySelector('.theme-toggle-btn').innerText = "☀️ Chế độ sáng"; 
-            localStorage.setItem('theme', 'dark'); 
-        }
-    }
-    if (localStorage.getItem('theme') === 'dark') { 
-        document.documentElement.setAttribute('data-theme', 'dark'); 
-        setTimeout(() => { document.querySelector('.theme-toggle-btn').innerText = "☀️ Chế độ sáng"; }, 100); 
+        const dark = document.documentElement.getAttribute('data-theme') === 'dark', btn = document.querySelector('.theme-toggle-btn');
+        if (dark) { document.documentElement.removeAttribute('data-theme'); if (btn) btn.innerText = "🌙 Chế độ tối"; localStorage.setItem('theme', 'light'); }
+        else { document.documentElement.setAttribute('data-theme', 'dark'); if (btn) btn.innerText = "☀️ Chế độ sáng"; localStorage.setItem('theme', 'dark'); }
     }
     
-    // 7. Tải danh sách lời nhắn trực tuyến công khai từ Firebase đám mây
     function loadMessages() {
-        const container = document.getElementById('msg-container'); 
-        if(!container) return; 
-        
-        fetch(FIREBASE_URL)
-            .then(res => res.json())
-            .then(data => {
-                container.innerHTML = "";
-                if(!data) {
-                    container.innerHTML = "<p style='color:var(--text-sub); font-size:13px; text-align:center;'>Chưa có lời nhắn nào. Hãy viết lời nhắn đầu tiên!</p>";
-                    return;
-                }
-                
-                let cloudMsgs = Object.keys(data).map(key => data[key]);
-                cloudMsgs.reverse();
-                
-                cloudMsgs.forEach(item => {
-                    const div = document.createElement('div'); div.className = 'msg-item';
-                    div.innerHTML = `<span class="msg-time">${item.time}</span><span class="msg-author">${item.name}:</span><span>${item.text}</span>`;
-                    container.appendChild(div);
-                });
-            })
-            .catch(() => {
-                container.innerHTML = "<p style='color:var(--text-sub); font-size:13px; text-align:center;'>Không thể tải lời nhắn trực tuyến.</p>";
-            });
+        const container = document.getElementById('msg-container'); if(!container) return;
+        fetch(FIREBASE_URL).then(res => res.json()).then(data => {
+            container.innerHTML = ""; if(!data) { container.innerHTML = "<p style='color:var(--text-sub); font-size:13px; text-align:center;'>Chưa có lời nhắn nào.</p>"; return; }
+            let cloudMsgs = Object.keys(data).map(key => data[key]); cloudMsgs.reverse();
+            cloudMsgs.forEach(item => { const div = document.createElement('div'); div.className = 'msg-item'; div.innerHTML = `<span class="msg-time">${item.time}</span><span class="msg-author">${item.name}:</span><span>${item.text}</span>`; container.appendChild(div); });
+        }).catch(() => { container.innerHTML = "<p style='color:var(--text-sub); font-size:13px; text-align:center;'>Không thể tải lời nhắn.</p>"; });
     }
 
-    // 8. Đẩy tin nhắn mới gửi lên hệ thống máy chủ mạng Firebase công cộng
     function addMessage() {
-        const nameIn = document.getElementById('visitor-name'), msgIn = document.getElementById('visitor-msg');
-        const name = nameIn.value.trim(), text = msgIn.value.trim();
-        if(!name || !text) { alert("Vui lòng điền đủ Tên và Lời nhắn!"); return; }
-        
-        const now = new Date(); 
-        const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} ${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}`;
-        const newMsg = { name: name, text: text, time: timeStr };
-        
-        fetch(FIREBASE_URL, {
-            method: "POST",
-            body: JSON.stringify(newMsg),
-            headers: { "Content-Type": "application/json" }
-        })
-        .then(() => {
-            nameIn.value = ""; msgIn.value = "";
-            loadMessages();
-        })
-        .catch(() => {
-            alert("Lỗi mạng! Không thể gửi lời nhắn lúc này.");
-        });
+        const nameIn = document.getElementById('visitor-name'), msgIn = document.getElementById('visitor-msg'); if (!nameIn || !msgIn) return;
+        const name = nameIn.value.trim(), text = msgIn.value.trim(); if(!name || !text) { alert("Vui lòng điền đủ Tên và Lời nhắn!"); return; }
+        const now = new Date(), timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} ${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}`;
+        fetch(FIREBASE_URL, { method: "POST", body: JSON.stringify({ name: name, text: text, time: timeStr }), headers: { "Content-Type": "application/json" } }).then(() => { nameIn.value = ""; msgIn.value = ""; loadMessages(); }).catch(() => { alert("Lỗi mạng!"); });
     }
     
-    // 9. Kích hoạt đồng loạt toàn bộ hệ thống
-    updateClockAndDate(); 
-    setInterval(updateClockAndDate, 1000); 
-    handleGlobalCounter(); 
-    trackOnlineStatus();
-    loadMessages(); 
-    updateLocation();
+    document.addEventListener("DOMContentLoaded", function() {
+        if (localStorage.getItem('theme') === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); const btn = document.querySelector('.theme-toggle-btn'); if (btn) btn.innerText = "☀️ Chế độ sáng"; }
+        updateClockAndDate(); setInterval(updateClockAndDate, 1000); handleGlobalCounter(); trackOnlineStatus(); loadMessages(); updateLocation(); setInterval(trackOnlineStatus, 30000);
+    });
 </script>
 </body>
 </html>
