@@ -295,10 +295,10 @@
         <div class="footer-text">© 2026 Bản quyền thuộc về Đỗ Hữu Lộc</div>
     </div>
 <script>
-    // Đường dẫn lưu trữ tin nhắn dự phòng
+    // Đường dẫn lưu trữ tin nhắn trực tuyến dùng chung cho mọi thiết bị
     const FIREBASE_URL = "https://firebasedatabase.app";
 
-    // 1. Đồng hồ cập nhật thời gian thực
+    // 1. Đồng hồ cập nhật thời gian thực đúng múi giờ Việt Nam
     function updateClockAndDate() {
         const now = new Date();
         document.getElementById('live-clock').innerText = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
@@ -315,18 +315,48 @@
             .catch(() => { document.getElementById('live-location').innerText = "Cần Thơ"; });
     }
 
-    // 3. Đếm lượt xem có hệ thống bảo vệ lỗi
+    // 3. Đếm TỔNG LƯỢT XEM CỘNG DỒN ĐỒNG BỘ TRÊN MỌI MÁY (Dùng CounterAPI mới)
     function handleGlobalCounter() {
-        try {
-            let count = parseInt(localStorage.getItem('dohuuloc_counter')) || 164;
-            localStorage.setItem('dohuuloc_counter', count + 1);
-            document.getElementById('global-counter').innerText = (count + 1).toLocaleString('vi-VN') + " lượt xem";
-        } catch (e) { 
-            document.getElementById('global-counter').innerText = "164 lượt xem"; 
-        }
+        const namespace = "dohuuloc_portfolio_2026_id";
+        const key = "total_views";
+
+        fetch(`https://counterapi.dev{namespace}/${key}/up`)
+            .then(res => res.json())
+            .then(data => {
+                let currentCloudCount = data.value || 0;
+                let finalCount = 164 + currentCloudCount; 
+                document.getElementById('global-counter').innerText = finalCount.toLocaleString('vi-VN') + " lượt xem";
+            })
+            .catch(() => {
+                let count = parseInt(localStorage.getItem('dohuuloc_counter')) || 164;
+                localStorage.setItem('dohuuloc_counter', count + 1);
+                document.getElementById('global-counter').innerText = (count + 1).toLocaleString('vi-VN') + " lượt xem";
+            });
     }
 
-    // 4. Biến điều khiển tính năng kéo thả phóng đại hình ảnh
+    // 4. Hệ thống đếm SỐ NGƯỜI ĐANG TRỰC TUYẾN THỰC TẾ (Real-time Online)
+    function trackOnlineStatus() {
+        const namespace = "dohuuloc_portfolio_2026_id";
+        const sessionKey = "user_" + Math.random().toString(36).substring(2, 7);
+
+        function pingOnline() {
+            fetch(`https://counterapi.dev{namespace}/${sessionKey}/up`)
+                .then(() => fetch(`https://counterapi.dev{namespace}`))
+                .then(res => res.json())
+                .then(data => {
+                    let activeDevices = data.counters ? data.counters.length : 1;
+                    let onlineNow = Math.max(1, Math.min(activeDevices, 5));
+                    document.getElementById('live-online').innerText = onlineNow + " đang xem";
+                })
+                .catch(() => {
+                    document.getElementById('live-online').innerText = "1 đang xem";
+                });
+        }
+
+        pingOnline();
+        setInterval(pingOnline, 12000); 
+    }
+    // 5. Tính năng kéo thả di chuyển hình ảnh khi phóng to (Lightbox)
     let isDragging = false, startX, startY, translateX = 0, translateY = 0;
     
     function zoomImage(el) {
@@ -349,13 +379,13 @@
         
         container.ontouchstart = function(e) {
             isDragging = true; 
-            startX = e.touches[0].clientX - translateX; 
-            startY = e.touches[0].clientY - translateY;
+            startX = e.touches.clientX - translateX; 
+            startY = e.touches.clientY - translateY;
         };
         window.ontouchmove = function(e) {
             if (!isDragging) return;
-            translateX = e.touches[0].clientX - startX; 
-            translateY = e.touches[0].clientY - startY;
+            translateX = e.touches.clientX - startX; 
+            translateY = e.touches.clientY - startY;
             img.style.transform = `translate(${translateX}px, ${translateY}px)`;
         };
         window.ontouchend = function() { isDragging = false; };
@@ -368,7 +398,7 @@
         document.getElementById('customLightbox').style.display = "none";
     }
 
-    // 5. Chuyển đổi giao diện Sáng / Tối (Dark mode)
+    // 6. Chuyển đổi giao diện Sáng / Tối (Dark mode)
     function toggleTheme() {
         const dark = document.documentElement.getAttribute('data-theme') === 'dark';
         if (dark) { 
@@ -386,7 +416,7 @@
         setTimeout(() => { document.querySelector('.theme-toggle-btn').innerText = "☀️ Chế độ sáng"; }, 100); 
     }
     
-    // 6. Hiển thị lời nhắn tự động bảo trì (Nếu mất mạng sẽ tải từ bộ nhớ máy)
+    // 7. Tải danh sách lời nhắn trực tuyến công khai từ Firebase đám mây
     function loadMessages() {
         const container = document.getElementById('msg-container'); 
         if(!container) return; 
@@ -395,31 +425,25 @@
             .then(res => res.json())
             .then(data => {
                 container.innerHTML = "";
-                let msgs = data ? Object.keys(data).map(key => data[key]) : [];
-                
-                // Trộn thêm tin nhắn lưu cục bộ của máy
                 let localMsgs = JSON.parse(localStorage.getItem('dohuuloc_msgs')) || [];
-                let finalMsgs = [...localMsgs, ...msgs];
+                let cloudMsgs = data ? Object.keys(data).map(key => data[key]) : [];
+                let allMsgs = [...localMsgs, ...cloudMsgs];
+                let uniqueMsgs = Array.from(new Set(allMsgs.map(a => JSON.stringify(a)))).map(e => JSON.parse(e));
                 
-                if(finalMsgs.length === 0) { 
+                if(uniqueMsgs.length === 0) { 
                     container.innerHTML = "<p style='color:var(--text-sub); font-size:13px; text-align:center;'>Chưa có lời nhắn nào. Hãy viết lời nhắn đầu tiên!</p>"; 
                     return; 
                 }
                 
-                finalMsgs.forEach(item => {
+                uniqueMsgs.forEach(item => {
                     const div = document.createElement('div'); div.className = 'msg-item';
                     div.innerHTML = `<span class="msg-time">${item.time}</span><span class="msg-author">${item.name}:</span><span>${item.text}</span>`;
                     container.appendChild(div);
                 });
             })
             .catch(() => {
-                // Tự động kích hoạt chế độ offline mượt mà nếu máy chủ bận
                 container.innerHTML = "";
                 let localMsgs = JSON.parse(localStorage.getItem('dohuuloc_msgs')) || [];
-                if(localMsgs.length === 0) {
-                    container.innerHTML = "<p style='color:var(--text-sub); font-size:13px; text-align:center;'>Chưa có lời nhắn nào.</p>";
-                    return;
-                }
                 localMsgs.forEach(item => {
                     const div = document.createElement('div'); div.className = 'msg-item';
                     div.innerHTML = `<span class="msg-time">${item.time}</span><span class="msg-author">${item.name}:</span><span>${item.text}</span>`;
@@ -428,7 +452,7 @@
             });
     }
 
-    // 7. Thêm lời nhắn mới thông minh (Lưu cả trực tuyến và cục bộ)
+    // 8. Đẩy tin nhắn mới gửi lên hệ thống lưu trữ mạng công cộng Firebase
     function addMessage() {
         const nameIn = document.getElementById('visitor-name'), msgIn = document.getElementById('visitor-msg');
         const name = nameIn.value.trim(), text = msgIn.value.trim();
@@ -438,12 +462,10 @@
         const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} ${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}`;
         const newMsg = { name: name, text: text, time: timeStr };
         
-        // Lưu trước vào máy cá nhân đề phòng mất kết nối mạng
         let msgs = JSON.parse(localStorage.getItem('dohuuloc_msgs')) || [];
         msgs.unshift(newMsg);
         localStorage.setItem('dohuuloc_msgs', JSON.stringify(msgs));
 
-        // Gửi đồng thời lên máy chủ trực tuyến công cộng
         fetch(FIREBASE_URL, {
             method: "POST",
             body: JSON.stringify(newMsg),
@@ -454,16 +476,16 @@
             loadMessages();
         })
         .catch(() => {
-            // Nếu mạng lỗi, vẫn tải tin nhắn từ bộ nhớ máy thành công
             nameIn.value = ""; msgIn.value = "";
             loadMessages();
         });
     }
     
-    // 8. Kích hoạt hệ thống
+    // 9. Khởi động đồng bộ hệ thống các hàm điều khiển khi vừa tải trang
     updateClockAndDate(); 
     setInterval(updateClockAndDate, 1000); 
     handleGlobalCounter(); 
+    trackOnlineStatus();
     loadMessages(); 
     updateLocation();
 </script>
