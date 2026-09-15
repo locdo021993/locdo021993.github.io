@@ -295,8 +295,9 @@
         <div class="footer-text">© 2026 Bản quyền thuộc về Đỗ Hữu Lộc</div>
     </div>
 <script>
-    // Đường dẫn cơ sở dữ liệu Firebase trực tuyến đồng bộ tin nhắn công khai
+    // Đường dẫn cơ sở dữ liệu Firebase trực tuyến dùng chung để đồng bộ tin nhắn và lượt xem
     const FIREBASE_URL = "https://firebasedatabase.app";
+    const COUNTER_URL = "https://firebasedatabase.app";
 
     // 1. Đồng hồ cập nhật thời gian thực đúng múi giờ Việt Nam
     function updateClockAndDate() {
@@ -315,47 +316,49 @@
             .catch(() => { document.getElementById('live-location').innerText = "Cần Thơ"; });
     }
 
-    // 3. Đếm TỔNG LƯỢT XEM CỘNG DỒN ĐỒNG BỘ TRÊN MỌI MÁY (Sửa chuẩn API V2)
+    // 3. Đếm TỔNG LƯỢT XEM CỘNG DỒN ĐỒNG BỘ 100% QUA GOOGLE FIREBASE
     function handleGlobalCounter() {
-        const namespace = "dohuuloc_portfolio_2026_final";
-        const key = "page_views";
-
-        // Sử dụng phương thức GET chuẩn của CounterAPI V2 để tăng số lượng truy cập đồng bộ
-        fetch(`https://counterapi.dev{namespace}/${key}/up`)
+        // Bước 1: Lấy số đếm hiện tại đang lưu trên mạng về
+        fetch(COUNTER_URL)
             .then(res => res.json())
-            .then(data => {
-                let currentCloudCount = data.value || 0;
-                let finalCount = 164 + currentCloudCount; // Cộng dồn số gốc 164 ban đầu của bạn
-                document.getElementById('global-counter').innerText = finalCount.toLocaleString('vi-VN') + " lượt xem";
+            .then(currentValue => {
+                // Nếu chưa có số nào trên mạng, lấy mốc xuất phát là 1
+                let cloudCount = currentValue ? parseInt(currentValue) : 1;
+                let nextValue = cloudCount + 1;
+
+                // Bước 2: Đẩy số mới đã cộng thêm 1 ngược lên mạng internet để lưu lại cho mọi máy cùng dùng
+                fetch(COUNTER_URL, {
+                    method: "PUT",
+                    body: JSON.stringify(nextValue)
+                })
+                .then(() => {
+                    let finalCount = 164 + nextValue; // Cộng dồn số gốc 164 ban đầu của bạn
+                    document.getElementById('global-counter').innerText = finalCount.toLocaleString('vi-VN') + " lượt xem";
+                });
             })
             .catch(() => {
-                let count = parseInt(localStorage.getItem('dohuuloc_counter')) || 164;
-                document.getElementById('global-counter').innerText = count.toLocaleString('vi-VN') + " lượt xem";
+                // Nhánh phụ bảo vệ nếu máy người dùng không có kết nối mạng
+                document.getElementById('global-counter').innerText = "164 lượt xem";
             });
     }
 
-    // 4. Hệ thống hiển thị số lượng khách trực tuyến mô phỏng thực tế (Siêu tự nhiên)
+    // 4. Hệ thống hiển thị số người trực tuyến ổn định, tự nhiên (Không bị nhảy số ảo liên tục)
     function trackOnlineStatus() {
-        function updateOnlineText() {
-            const now = new Date();
-            const hour = now.getHours();
-            let onlineNow = 1;
+        const now = new Date();
+        const hour = now.getHours();
+        let baseOnline = 1;
 
-            // Thuật toán tính toán số người dựa trên mốc thời gian sinh hoạt trong ngày
-            if (hour >= 8 && hour <= 11) {
-                onlineNow = Math.floor(Math.random() * (4 - 2 + 1)) + 2; // Sáng: 2 - 4 người xem
-            } else if (hour >= 12 && hour <= 14) {
-                onlineNow = Math.floor(Math.random() * (5 - 3 + 1)) + 3; // Trưa nghỉ ngơi: 3 - 5 người xem
-            } else if (hour >= 19 && hour <= 23) {
-                onlineNow = Math.floor(Math.random() * (6 - 3 + 1)) + 3; // Tối online nhiều: 3 - 6 người xem
-            } else {
-                onlineNow = Math.floor(Math.random() * (2 - 1 + 1)) + 1; // Đêm muộn / Giờ làm việc: 1 - 2 người xem
-            }
+        // Tính toán số lượng người xem phù hợp dựa theo thời gian sinh hoạt thực tế trong ngày
+        if (hour >= 8 && hour <= 12) baseOnline = 2;       // Sáng đi làm
+        else if (hour >= 13 && hour <= 17) baseOnline = 3; // Chiều làm việc
+        else if (hour >= 18 && hour <= 23) baseOnline = 4; // Tối rảnh rỗi lướt web đông nhất
 
-            document.getElementById('live-online').innerText = onlineNow + " đang xem";
-        }
-        updateOnlineText();
-        setInterval(updateOnlineText, 20000); // Tự động cập nhật thay đổi ngẫu nhiên sau mỗi 20 giây
+        // Tạo một số lẻ nhỏ ngẫu nhiên cố định cho mỗi lần vào trang (ví dụ: cộng thêm 0 hoặc 1 người)
+        let randomPlus = Math.floor(Math.random() * 2); 
+        let finalOnline = baseOnline + randomPlus;
+
+        // Hiển thị con số cố định này suốt phiên làm việc, nhìn sẽ rất giống lượng khách thật đang xem
+        document.getElementById('live-online').innerText = finalOnline + " đang xem";
     }
     // 5. Tính năng kéo thả di chuyển hình ảnh khi phóng to (Lightbox)
     let isDragging = false, startX, startY, translateX = 0, translateY = 0;
@@ -380,13 +383,13 @@
         
         container.ontouchstart = function(e) {
             isDragging = true; 
-            startX = e.touches.clientX - translateX; 
-            startY = e.touches.clientY - translateY;
+            startX = e.touches[0].clientX - translateX; 
+            startY = e.touches[0].clientY - translateY;
         };
         window.ontouchmove = function(e) {
             if (!isDragging) return;
-            translateX = e.touches.clientX - startX; 
-            translateY = e.touches.clientY - startY;
+            translateX = e.touches[0].clientX - startX; 
+            translateY = e.touches[0].clientY - startY;
             img.style.transform = `translate(${translateX}px, ${translateY}px)`;
         };
         window.ontouchend = function() { isDragging = false; };
@@ -417,7 +420,7 @@
         setTimeout(() => { document.querySelector('.theme-toggle-btn').innerText = "☀️ Chế độ sáng"; }, 100); 
     }
     
-    // 7. Tải và hiển thị danh sách lời nhắn ĐỒNG BỘ 100% TỪ MẠNG
+    // 7. Tải và hiển thị danh sách lời nhắn ĐỒNG BỘ TỪ MẠNG GOOGLE FIREBASE
     function loadMessages() {
         const container = document.getElementById('msg-container'); 
         if(!container) return; 
@@ -431,7 +434,7 @@
                     return;
                 }
                 
-                // Đồng bộ danh sách lời nhắn từ máy chủ mạng đám mây xuống màn hình của mọi người
+                // Đồng bộ danh sách tin nhắn từ máy chủ đám mây xuống màn hình của mọi người
                 let cloudMsgs = Object.keys(data).map(key => data[key]);
                 cloudMsgs.reverse();
                 
@@ -442,11 +445,11 @@
                 });
             })
             .catch(() => {
-                container.innerHTML = "<p style='color:var(--text-sub); font-size:13px; text-align:center;'>Không thể tải lời nhắn. Hãy kiểm tra kết nối mạng!</p>";
+                container.innerHTML = "<p style='color:var(--text-sub); font-size:13px; text-align:center;'>Không thể tải lời nhắn trực tuyến.</p>";
             });
     }
 
-    // 8. Đẩy tin nhắn mới gửi thẳng lên hệ thống máy chủ mạng dùng chung
+    // 8. Đẩy tin nhắn mới gửi thẳng lên hệ thống máy chủ Firebase công cộng
     function addMessage() {
         const nameIn = document.getElementById('visitor-name'), msgIn = document.getElementById('visitor-msg');
         const name = nameIn.value.trim(), text = msgIn.value.trim();
@@ -456,7 +459,7 @@
         const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} ${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}`;
         const newMsg = { name: name, text: text, time: timeStr };
         
-        // Đẩy thẳng tin nhắn lên mạng Firebase để chia sẻ cho mọi máy cùng đồng bộ nhìn thấy
+        // Gửi dữ liệu tin nhắn trực tiếp lên internet
         fetch(FIREBASE_URL, {
             method: "POST",
             body: JSON.stringify(newMsg),
@@ -464,14 +467,14 @@
         })
         .then(() => {
             nameIn.value = ""; msgIn.value = "";
-            loadMessages(); // Cập nhật danh sách hiển thị ngay sau khi gửi thành công
+            loadMessages(); // Tải lại danh sách lời nhắn để cập nhật tức thì tin nhắn của khách lên màn hình
         })
         .catch(() => {
             alert("Lỗi mạng! Không thể gửi lời nhắn lên hệ thống chung lúc này.");
         });
     }
     
-    // 9. Kích hoạt đồng loạt toàn bộ hệ thống khi bật trang web
+    // 9. Kích hoạt đồng loạt toàn bộ hệ thống các hàm điều khiển khi vừa mở trang web
     updateClockAndDate(); 
     setInterval(updateClockAndDate, 1000); 
     handleGlobalCounter(); 
