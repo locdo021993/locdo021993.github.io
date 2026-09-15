@@ -159,7 +159,7 @@
         /* FOOTER */
         .footer-text { text-align: center; margin-top: auto; padding-top: 20px; font-size: 13px; color: var(--text-sub); border-top: 1px solid var(--border); }
 
-        /* === ĐOẠN SỬA LỖI ĐIỆN THOẠI (RESPONSIVE) === */
+        /* === RESPONSIVE ĐIỆN THOẠI === */
         @media (max-width: 768px) {
             body { padding: 10px; }
             .profile-card { padding: 20px 15px; min-height: auto; }
@@ -178,7 +178,6 @@
 </head>
 <body>
     <div class="profile-card">
-        <!-- Thanh điều hướng và thông tin đầu trang -->
         <div class="top-navbar">
             <div class="header-profile-box">
                 <div class="avatar-container"><img src="avatar.jpeg" class="avatar-img" alt="Avatar"></div>
@@ -192,18 +191,16 @@
                 <div>⏰ Giờ: <span id="live-clock" class="info-value-mini">00:00:00</span></div>
                 <div>📅 Ngày: <span id="live-date" class="info-value-mini">--/--/----</span></div>
                 <div>📍 Vị trí: <span id="live-location" class="info-value-mini">Đang xác định...</span></div>
-                <div>📊 Lượt xem: <span id="global-counter" class="info-value-mini">164</span></div>
+                <div>📊 Lượt xem: <span id="global-counter" class="info-value-mini">146</span></div>
                 <div>🟢 Trực tuyến: <span class="online-dot"></span><span id="live-online" class="info-value-mini">1 đang xem</span></div>
                 <button class="theme-toggle-btn" onclick="toggleTheme()">🌙 Chế độ tối</button>
             </div>
         </div>
         
-        <!-- Chữ chạy giới thiệu -->
         <div class="bio-container">
             <p class="bio-marquee">Xin chào! Tôi là Đỗ Hữu Lộc. Chào mừng bạn đã ghé thăm trang web cá nhân chính thức của tôi!</p>
         </div>
 
-        <!-- Tâm trạng -->
         <div class="status-container">
             <div class="status-title">💭 Tâm trạng hôm nay</div>
             <div class="status-box-round">
@@ -211,7 +208,6 @@
             </div>
         </div>
         
-        <!-- Lưới hình ảnh -->
         <div class="custom-grid-3">
             <div class="grid-item-box" style="cursor: pointer;" onclick="zoomImage(this)">
                 <div class="media-wrapper"><img src="anh1.jpg" alt="Ảnh 1"></div>
@@ -227,7 +223,6 @@
             </div>
         </div>
 
-        <!-- Tiếp thị liên kết Shopee -->
         <div class="shopee-section">
             <h3>🛍️ Gợi ý sản phẩm yêu thích (Shopee)</h3>
             <div class="product-list-vertical">
@@ -274,7 +269,6 @@
             </div>
         </div>
 
-        <!-- Phần Lưu bút nhắn tin -->
         <div class="guestbook-section">
             <h3>✍️ Để lại lời nhắn</h3>
             <div class="form-row">
@@ -285,17 +279,15 @@
             <div class="message-list" id="msg-container"></div>
         </div>
         
-        <!-- Khung Lightbox Phóng to ảnh -->
         <div id="customLightbox" class="media-lightbox" onclick="closeZoom()">
             <span class="lightbox-close" onclick="closeZoom()">&times;</span>
             <div id="lightboxMediaContainer"></div>
         </div>
         
-        <!-- Bản quyền chân trang -->
         <div class="footer-text">© 2026 Bản quyền thuộc về Đỗ Hữu Lộc</div>
     </div>
 <script>
-    // Đường dẫn cơ sở dữ liệu Firebase trực tuyến đồng bộ tin nhắn công khai
+    // Đường dẫn Firebase trực tuyến lưu trữ tin nhắn công khai dùng chung
     const FIREBASE_URL = "https://firebasedatabase.app";
 
     // 1. Đồng hồ cập nhật thời gian thực đúng múi giờ Việt Nam
@@ -315,28 +307,27 @@
             .catch(() => { document.getElementById('live-location').innerText = "Cần Thơ"; });
     }
 
-    // 3. ĐẾM VÀ CỘNG DỒN LƯỢT XEM TỰ ĐỘNG - ĐỒNG BỘ MỌI THIẾT BỊ QUA ĐÁM MÂY ABACUS
+    // 3. ĐẾM VÀ CỘNG DỒN ĐỒNG BỘ 100% TRÊN MỌI MÁY QUA ĐÁM MÂY ABACUS
     function handleGlobalCounter() {
-        // Tạo một không gian tên riêng của bạn trên đám mây để không bị trùng số với trang web khác
-        const namespace = "dohuuloc_portfolio_2026_final_cloud";
+        // Tạo không gian đếm tên riêng cho Đỗ Hữu Lộc trên hệ thống đám mây toàn cầu
+        const namespace = "dohuuloc_portfolio_2026_abacus_system";
         const key = "total_visits";
 
-        // Gọi lệnh 'hit' lên server Abacus để máy chủ tự động cộng 1 và trả về số tổng mới nhất
+        // Sử dụng cổng mạng Abacus để tự động tăng số và lấy dữ liệu cộng dồn về máy
         fetch(`https://jasoncameron.dev{namespace}/${key}`)
             .then(res => res.json())
             .then(data => {
-                let currentCloudCount = data.value || 0;
-                let finalCount = 146 + currentCloudCount; // Giữ mốc gốc 146 đồng bộ hiện tại của bạn để đếm tiến lên
-                
+                let cloudCount = data.value || 0;
+                let finalCount = 146 + cloudCount; // Giữ mốc gốc 146 hiện tại của bạn để đếm tiến lên
                 document.getElementById('global-counter').innerText = finalCount.toLocaleString('vi-VN') + " lượt xem";
             })
             .catch(() => {
-                // Nhánh bảo vệ hiển thị số cũ nếu máy khách bị mất mạng internet
-                document.getElementById('global-counter').innerText = "146 lượt xem";
+                let count = parseInt(localStorage.getItem('dohuuloc_counter')) || 146;
+                document.getElementById('global-counter').innerText = count.toLocaleString('vi-VN') + " lượt xem";
             });
     }
 
-    // 4. Hệ thống hiển thị số người trực tuyến ổn định, tự nhiên (Giữ số thông minh)
+    // 4. Thuật toán hiển thị số người trực tuyến thông minh (Giao diện tự nhiên và uy tín)
     function trackOnlineStatus() {
         const now = new Date();
         const hour = now.getHours();
@@ -351,7 +342,6 @@
 
         document.getElementById('live-online').innerText = finalOnline + " đang xem";
     }
-
     // 5. Tính năng kéo thả di chuyển hình ảnh khi phóng to (Lightbox)
     let isDragging = false, startX, startY, translateX = 0, translateY = 0;
     
@@ -375,13 +365,13 @@
         
         container.ontouchstart = function(e) {
             isDragging = true; 
-            startX = e.touches[0].clientX - translateX; 
-            startY = e.touches[0].clientY - translateY;
+            startX = e.touches.clientX - translateX; 
+            startY = e.touches.clientY - translateY;
         };
         window.ontouchmove = function(e) {
             if (!isDragging) return;
-            translateX = e.touches[0].clientX - startX; 
-            translateY = e.touches[0].clientY - startY;
+            translateX = e.touches.clientX - startX; 
+            translateY = e.touches.clientY - startY;
             img.style.transform = `translate(${translateX}px, ${translateY}px)`;
         };
         window.ontouchend = function() { isDragging = false; };
@@ -412,7 +402,7 @@
         setTimeout(() => { document.querySelector('.theme-toggle-btn').innerText = "☀️ Chế độ sáng"; }, 100); 
     }
     
-    // 7. Tải và hiển thị danh sách lời nhắn ĐỒNG BỘ TỪ MẠNG GOOGLE FIREBASE
+    // 7. Tải danh sách lời nhắn trực tuyến công khai từ Firebase đám mây
     function loadMessages() {
         const container = document.getElementById('msg-container'); 
         if(!container) return; 
@@ -426,7 +416,6 @@
                     return;
                 }
                 
-                // Đồng bộ danh sách tin nhắn từ máy chủ đám mây xuống màn hình của mọi người
                 let cloudMsgs = Object.keys(data).map(key => data[key]);
                 cloudMsgs.reverse();
                 
@@ -441,7 +430,7 @@
             });
     }
 
-    // 8. Đẩy tin nhắn mới gửi thẳng lên hệ thống máy chủ Firebase công cộng
+    // 8. Đẩy tin nhắn mới gửi lên hệ thống máy chủ mạng dùng chung Firebase
     function addMessage() {
         const nameIn = document.getElementById('visitor-name'), msgIn = document.getElementById('visitor-msg');
         const name = nameIn.value.trim(), text = msgIn.value.trim();
@@ -451,7 +440,6 @@
         const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} ${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}`;
         const newMsg = { name: name, text: text, time: timeStr };
         
-        // Gửi dữ liệu tin nhắn trực tiếp lên internet
         fetch(FIREBASE_URL, {
             method: "POST",
             body: JSON.stringify(newMsg),
@@ -459,14 +447,14 @@
         })
         .then(() => {
             nameIn.value = ""; msgIn.value = "";
-            loadMessages(); // Tải lại danh sách lời nhắn để cập nhật tức thì tin nhắn của khách lên màn hình
+            loadMessages();
         })
         .catch(() => {
-            alert("Lỗi mạng! Không thể gửi lời nhắn lên hệ thống chung lúc này.");
+            alert("Lỗi mạng! Không thể gửi lời nhắn lúc này.");
         });
     }
     
-    // 9. Kích hoạt đồng loạt toàn bộ hệ thống các hàm điều khiển khi vừa mở trang web
+    // 9. Kích hoạt đồng loạt toàn bộ hệ thống
     updateClockAndDate(); 
     setInterval(updateClockAndDate, 1000); 
     handleGlobalCounter(); 
