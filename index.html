@@ -316,28 +316,34 @@
             .catch(() => { document.getElementById('live-location').innerText = "Cần Thơ"; });
     }
 
-    // 3. Đếm TỔNG LƯỢT XEM CỘNG DỒN TỰ ĐỘNG TĂNG MƯỢT MÀ QUA GOOGLE FIREBASE
+    // 3. ĐẾM VÀ CỘNG DỒN TỰ ĐỘNG - LƯU TRỮ VĨNH VIỄN - ĐỒNG BỘ MỌI THIẾT BỊ TRÊN INTERNET
     function handleGlobalCounter() {
-        // Bước 1: Gửi 1 lệnh POST lên mạng để đánh dấu có 1 lượt truy cập mới
-        fetch(COUNTER_URL, {
-            method: "POST",
-            body: JSON.stringify({ timestamp: new Date().getTime() }),
-            headers: { "Content-Type": "application/json" }
-        })
-        .then(() => {
-            // Bước 2: Tải toàn bộ danh sách các dấu vết lượt xem về để đếm tổng số lượng
-            fetch(COUNTER_URL)
-                .then(res => res.json())
-                .then(data => {
-                    let totalCloudCount = data ? Object.keys(data).length : 1;
-                    let finalCount = 146 + totalCloudCount; // Giữ mốc 146 đồng bộ hiện tại của bạn để đếm tiến lên
-                    
+        // Bước 1: Gọi lên mạng lấy số lượt xem hiện tại đang tích lũy về máy
+        fetch(COUNTER_URL)
+            .then(res => res.json())
+            .then(data => {
+                // Nếu trên mạng chưa có dữ liệu nào, mặc định số bắt đầu tính từ 1
+                let currentCloudValue = (data && data.views_count) ? parseInt(data.views_count) : 1;
+                
+                // Mỗi lần có máy truy cập hoặc F5 tải lại trang, tự động cộng thêm 1
+                let nextCloudValue = currentCloudValue + 1;
+
+                // Bước 2: Dùng lệnh PATCH để đẩy số mới lên mạng cập nhật vĩnh viễn mà không bị chặn bảo mật
+                fetch(COUNTER_URL, {
+                    method: "PATCH",
+                    body: JSON.stringify({ views_count: nextCloudValue }),
+                    headers: { "Content-Type": "application/json" }
+                })
+                .then(() => {
+                    // Bước 3: Lấy mốc gốc 146 hiện tại của bạn cộng với số đếm trên mạng để hiển thị
+                    let finalCount = 146 + nextCloudValue;
                     document.getElementById('global-counter').innerText = finalCount.toLocaleString('vi-VN') + " lượt xem";
                 });
-        })
-        .catch(() => {
-            document.getElementById('global-counter').innerText = "146 lượt xem";
-        });
+            })
+            .catch(() => {
+                // Bộ phận dự phòng hiển thị nếu mạng internet của khách hàng bị ngắt kết nối đột ngột
+                document.getElementById('global-counter').innerText = "146 lượt xem";
+            });
     }
 
     // 4. Hệ thống hiển thị số người trực tuyến ổn định, tự nhiên (Không bị nhảy số ảo liên tục)
@@ -355,6 +361,7 @@
 
         document.getElementById('live-online').innerText = finalOnline + " đang xem";
     }
+
 
     // 5. Tính năng kéo thả di chuyển hình ảnh khi phóng to (Lightbox)
     let isDragging = false, startX, startY, translateX = 0, translateY = 0;
