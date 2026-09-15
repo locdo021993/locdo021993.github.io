@@ -315,13 +315,13 @@
             .catch(() => { document.getElementById('live-location').innerText = "Cần Thơ"; });
     }
 
-    // 3. Đếm TỔNG LƯỢT XEM CỘNG DỒN ĐỒNG BỘ TRÊN MỌI MÁY (Dùng API V2 mới nhất)
+    // 3. Đếm TỔNG LƯỢT XEM CỘNG DỒN ĐỒNG BỘ TRÊN MỌI MÁY (Sửa chuẩn API V2)
     function handleGlobalCounter() {
-        const namespace = "dohuuloc_portfolio_2026";
-        const key = "total_views_v2";
+        const namespace = "dohuuloc_portfolio_2026_final";
+        const key = "page_views";
 
-        // Sử dụng cổng mạng V2 mới để tăng số đếm đồng bộ trên toàn internet
-        fetch(`https://counterapi.dev{namespace}/${key}/up`, { method: "POST" })
+        // Sử dụng phương thức GET chuẩn của CounterAPI V2 để tăng số lượng truy cập đồng bộ
+        fetch(`https://counterapi.dev{namespace}/${key}/up`)
             .then(res => res.json())
             .then(data => {
                 let currentCloudCount = data.value || 0;
@@ -329,22 +329,33 @@
                 document.getElementById('global-counter').innerText = finalCount.toLocaleString('vi-VN') + " lượt xem";
             })
             .catch(() => {
-                // Nhánh phụ bảo vệ giao diện nếu người dùng bị rớt mạng internet
                 let count = parseInt(localStorage.getItem('dohuuloc_counter')) || 164;
                 document.getElementById('global-counter').innerText = count.toLocaleString('vi-VN') + " lượt xem";
             });
     }
 
-    // 4. Hệ thống hiển thị số lượng thiết bị đang cùng xem (Real-time Online sinh động)
+    // 4. Hệ thống hiển thị số lượng khách trực tuyến mô phỏng thực tế (Siêu tự nhiên)
     function trackOnlineStatus() {
         function updateOnlineText() {
-            const namespace = "dohuuloc_portfolio_2026";
-            // Lấy ngẫu nhiên số lượng người dùng ảo từ 2 đến 5 để trang web cá nhân luôn uy tín và sinh động
-            let onlineNow = Math.floor(Math.random() * (5 - 2 + 1)) + 2;
+            const now = new Date();
+            const hour = now.getHours();
+            let onlineNow = 1;
+
+            // Thuật toán tính toán số người dựa trên mốc thời gian sinh hoạt trong ngày
+            if (hour >= 8 && hour <= 11) {
+                onlineNow = Math.floor(Math.random() * (4 - 2 + 1)) + 2; // Sáng: 2 - 4 người xem
+            } else if (hour >= 12 && hour <= 14) {
+                onlineNow = Math.floor(Math.random() * (5 - 3 + 1)) + 3; // Trưa nghỉ ngơi: 3 - 5 người xem
+            } else if (hour >= 19 && hour <= 23) {
+                onlineNow = Math.floor(Math.random() * (6 - 3 + 1)) + 3; // Tối online nhiều: 3 - 6 người xem
+            } else {
+                onlineNow = Math.floor(Math.random() * (2 - 1 + 1)) + 1; // Đêm muộn / Giờ làm việc: 1 - 2 người xem
+            }
+
             document.getElementById('live-online').innerText = onlineNow + " đang xem";
         }
         updateOnlineText();
-        setInterval(updateOnlineText, 15000); // Tự động cập nhật thay đổi số người xem sau mỗi 15 giây
+        setInterval(updateOnlineText, 20000); // Tự động cập nhật thay đổi ngẫu nhiên sau mỗi 20 giây
     }
     // 5. Tính năng kéo thả di chuyển hình ảnh khi phóng to (Lightbox)
     let isDragging = false, startX, startY, translateX = 0, translateY = 0;
@@ -369,13 +380,13 @@
         
         container.ontouchstart = function(e) {
             isDragging = true; 
-            startX = e.touches[0].clientX - translateX; 
-            startY = e.touches[0].clientY - translateY;
+            startX = e.touches.clientX - translateX; 
+            startY = e.touches.clientY - translateY;
         };
         window.ontouchmove = function(e) {
             if (!isDragging) return;
-            translateX = e.touches[0].clientX - startX; 
-            translateY = e.touches[0].clientY - startY;
+            translateX = e.touches.clientX - startX; 
+            translateY = e.touches.clientY - startY;
             img.style.transform = `translate(${translateX}px, ${translateY}px)`;
         };
         window.ontouchend = function() { isDragging = false; };
@@ -420,7 +431,7 @@
                     return;
                 }
                 
-                // Lấy dữ liệu tin nhắn từ mạng internet công cộng về và xếp tin nhắn mới nhất lên đầu
+                // Đồng bộ danh sách lời nhắn từ máy chủ mạng đám mây xuống màn hình của mọi người
                 let cloudMsgs = Object.keys(data).map(key => data[key]);
                 cloudMsgs.reverse();
                 
@@ -445,7 +456,7 @@
         const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} ${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}`;
         const newMsg = { name: name, text: text, time: timeStr };
         
-        // Bấm nút gửi sẽ đẩy thẳng dữ liệu lên mạng đám mây Firebase để chia sẻ cho mọi máy cùng thấy
+        // Đẩy thẳng tin nhắn lên mạng Firebase để chia sẻ cho mọi máy cùng đồng bộ nhìn thấy
         fetch(FIREBASE_URL, {
             method: "POST",
             body: JSON.stringify(newMsg),
@@ -453,14 +464,14 @@
         })
         .then(() => {
             nameIn.value = ""; msgIn.value = "";
-            loadMessages(); // Gọi hàm cập nhật lại tin nhắn mới lên màn hình của mọi người
+            loadMessages(); // Cập nhật danh sách hiển thị ngay sau khi gửi thành công
         })
         .catch(() => {
             alert("Lỗi mạng! Không thể gửi lời nhắn lên hệ thống chung lúc này.");
         });
     }
     
-    // 9. Kích hoạt đồng loạt toàn bộ hệ thống các chức năng khi bật trang web
+    // 9. Kích hoạt đồng loạt toàn bộ hệ thống khi bật trang web
     updateClockAndDate(); 
     setInterval(updateClockAndDate, 1000); 
     handleGlobalCounter(); 
